@@ -1,0 +1,31 @@
+{
+  "name": "assignment-wt1-oauth",
+  "version": "1.0.0",
+  "description": "My first OAuth app",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon --inspect -r dotenv/config src/server.js",
+    "lint": "npx eslint ./src || exit 0",
+    "lint:fix": "npx eslint ./src --fix || exit 0"
+  },
+  "contributors": [
+    "Andrea Viola Caroline Åkesson <ca223pw@student.lnu.se>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.17.3",
+    "helmet": "^5.0.2",
+    "http-errors": "^2.0.0",
+    "mongoose": "^6.2.3",
+    "mongoose-lean-virtuals": "^0.9.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@lnu/eslint-config": "^1.1.4",
+    "dotenv": "^16.0.0",
+    "nodemon": "^2.0.15"
+  }
+}
