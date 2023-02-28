@@ -1,0 +1,30 @@
+<h1>Snippets</h1>
+<table class="table-container">
+  <thead>
+    <tr>
+      <th class="table-headings">Title</th>
+      <th class="table-headings">Snippet</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (viewData?.snippets?.length) { %>
+      <% for (const snippet of viewData.snippets) { %>
+        <tr>
+          <td><%= snippet.title %></td> <td class="table-snippets"><%= snippet.snippet %></td>
+          <% if (snippet.userid === userid) { %>
+          <td class="text-nowrap">
+            <a href="./snippets/<%= snippet.id %>/update" class="update-delete">Update</a>
+            <a href="./snippets/<%= snippet.id %>/delete" class="update-delete">Delete</a>
+          </td>
+          <% } %>
+        </tr>
+        <% } %>
+          <% } else { %>
+            <tr>
+              <td colspan="3" class="text-center text-danger">
+                There are no snippets to display
+              </td>
+            </tr>
+            <% } %>
+  </tbody>
+</table>

@@ -1,0 +1,18 @@
+<h1>Update snippet</h1>
+<form method="post" action="<%=baseURL%>snippets/<%= viewData?.id %>/update">
+  <div>
+    <label class="form-label" for="descriptionInput">
+      Title
+    </label>
+    <input type="text" class="form-control" id="descriptionInput" name="title" 
+      placeholder="Update snippet title here" value="<%= viewData?.title %>" required="required"
+    autofocus="autofocus"/>
+    <label class="form-label" for="snippetTextarea">
+      Snippet
+    </label>
+    <textarea name="snippet" id="snippetTextarea" required="required"><%= viewData?.snippet %></textarea>
+  </div>
+  <div>
+    <button type="submit">Update</button>
+  </div>
+</form>

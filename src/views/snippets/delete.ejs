@@ -1,0 +1,15 @@
+<h1>Delete snippet</h1>
+<form method="post" action="<%=baseURL%>snippets/<%= viewData?.id %>/delete">
+  <input type="hidden" name="id" value="<%= viewData?.id %>" />
+  <div>
+    <label class="form-label" for="descriptionInput">
+      Title
+    </label>
+    <input type="text" class="form-control" id="descriptionInput"
+      placeholder="Update snippets title here" value="<%= viewData?.title %>"
+      disabled />
+  </div>
+  <div>
+    <button type="submit" autofocus="autofocus">Delete</button>
+  </div>
+</form>
