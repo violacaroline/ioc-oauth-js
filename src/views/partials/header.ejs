@@ -1,40 +1,5 @@
 <header>
   <nav>
     <h1>CRUD Snippets</h1>
-    <div>
-      <ul>
-        <% if (userNameView) { %>
-        <li class="nav-item">
-          <span class="nav-link">User: <%= userNameView %> </span>
-        </li>
-        <% } %>
-        <li class="nav-item">
-          <a class="nav-link" href="./">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./snippets">Snippets</a>
-        </li>
-        <% if (userNameView) { %>
-        <li class="nav-item">
-          <a class="nav-link" href="./snippets/create">Create snippet</a>
-        </li>
-        <% } %>
-        <% if (!userNameView) { %>
-        <li class="nav-item">
-          <a class="nav-link" href="./snippets/register">Register</a>
-        </li>
-        <% } %>
-        <% if (!userNameView) { %>
-        <li class="nav-item">
-          <a class="nav-link" href="./snippets/login">Log in</a>
-        </li>
-        <% } %>
-        <% if (userNameView) { %>
-        <li class="nav-item">
-          <a class="nav-link" href="./snippets/logout">Log out</a>
-        </li>
-        <% } %>
-      </ul>
-    </div>
   </nav>
 </header>
