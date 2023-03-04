@@ -11,7 +11,7 @@ import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import helmet from 'helmet'
 import logger from 'morgan'
-import createError from 'http-errors'
+import session from 'express-session'
 import { router } from './routes/router.js'
 
 try {
@@ -23,21 +23,27 @@ try {
 
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
-
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'form-action': ["'self'", 'https://gitlab.lnu.se']
-      }
-    })
-  )
+  // app.use(
+  //   helmet.contentSecurityPolicy({
+  //     directives: {
+  //       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+  //       'form-action': ["'self'", 'https://gitlab.lnu.se']
+  //     }
+  //   })
+  // )
 
   // Set the base URL to use for all relative URLs in a document.
   const baseURL = process.env.BASE_URL || '/'
 
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
+
+  // Set up the session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+  }))
 
   // View engine setup.
   app.set('view engine', 'ejs')
@@ -65,7 +71,7 @@ try {
 
     // Pass the base URL to the views.
     res.locals.baseURL = baseURL
-    console.log(res.locals.baseURL)
+    // console.log(res.locals.baseURL)
 
     next()
   })
@@ -73,8 +79,8 @@ try {
   // Register routes.
   app.use('/', router)
 
-   // Error handler.
-   app.use(function (err, req, res, next) {
+  // Error handler.
+  app.use(function (err, req, res, next) {
     // 404 Not Found.
     if (err.status === 404) {
       return res
@@ -95,7 +101,6 @@ try {
       .status(err.status || 500)
       .render('errors/error', { error: err })
   })
-
 
   // Starts the HTTP server listening for connections.
   app.listen(process.env.PORT, () => {
