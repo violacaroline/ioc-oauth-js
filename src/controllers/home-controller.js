@@ -125,15 +125,34 @@ export class HomeController {
     //     }
     //   }
     // `
+    //   const query = `
+    //     query {
+    //       currentUser {
+    //       name
+    //       id
+    //       username
+    //     }
+    //   }
+    // `
+
     const query = `
       query {
         currentUser {
-        name
-        id
-        username
+        groups {
+        nodes {
+          id
+          name
+          projects {
+            nodes {
+              id
+              name
+            }
+          }
+        }
       }
-    }
-  `
+  }
+}
+`
     const url = 'https://gitlab.lnu.se/api/graphql'
     const headers = {
       'Content-Type': 'application/json',
@@ -143,7 +162,7 @@ export class HomeController {
 
     const response = await axios.post(url, data, { headers })
 
-    console.log('THE GRAPHQL RESPONSE ---------------------------------------------------- ', response.data)
+    console.log('THE GRAPHQL RESPONSE ---------------------------------------------------- ', response.data.data.currentUser.groups)
 
     res.render('auth/groups')
   }
