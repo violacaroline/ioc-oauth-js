@@ -60,7 +60,7 @@ export class HomeController {
 
     const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
     const accessToken = response.data.access_token
-    console.log('ACCESS_TOKEN FROM PROFILE ------------------------------------------', accessToken)
+    console.log('RESPONSE FROM PROFILE ------------------------------------------', accessToken)
 
     const { data } = await axios.get(`https://gitlab.lnu.se/api/v4/user?access_token=${accessToken}`)
 
@@ -79,7 +79,7 @@ export class HomeController {
    */
   async events (req, res, next) {
     const accessToken = req.session.accessToken
-    console.log('ACCESSTOKEN FROM EVENTS ------------------------ ', accessToken)
+    // console.log('ACCESSTOKEN FROM EVENTS ------------------------ ', accessToken)
 
     const { data } = await axios.get(`https://gitlab.lnu.se/api/v4/events?access_token=${accessToken}`)
 
@@ -98,7 +98,7 @@ export class HomeController {
    */
   async groups (req, res, next) {
     const accessToken = req.session.accessToken
-    // console.log('ACCESSTOKEN FROM GROUPS ------------------------ ', accessToken)
+    console.log('ACCESSTOKEN FROM GROUPS ------------------------ ', accessToken)
 
     // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
 
@@ -109,17 +109,28 @@ export class HomeController {
     // const { data } = await axios.get(`https://gitlab.lnu.se/api/v4/groups?access_token=${accessToken}`)
 
     // console.log('The group data ------------------------ ', data)
+    //   const query = `
+    //   query {
+    //     currentUser {
+    //       groups(first: 1) {
+    //         nodes {
+    //           name
+    //           projects(first: 1) {
+    //             nodes {
+    //               name
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // `
     const query = `
-    query {
-      groups(first: 1) {
-        nodes {
-          name
-          projects(first: 1) {
-            nodes {
-              name
-            }
-          }
-        }
+      query {
+        currentUser {
+        name
+        id
+        username
       }
     }
   `
@@ -132,7 +143,7 @@ export class HomeController {
 
     const response = await axios.post(url, data, { headers })
 
-    console.log('THE GRAPHQL RESPONSE ---------------------------------------------------- ', response.data.errors)
+    console.log('THE GRAPHQL RESPONSE ---------------------------------------------------- ', response.data)
 
     res.render('auth/groups')
   }
