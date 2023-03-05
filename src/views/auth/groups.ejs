@@ -1,27 +1,30 @@
 <div class="groups">
   <h1>Groups & Projects</h1>
   <% if (groups?.length> 0) { %>
+    
     <% for (const group of groups) { %>
       <div class="group-div">
+        <h3>Group</h3>
         <p>
           Group Name: <%= group.name %>
         </p>
         <p>
           Group Path: <%= group.fullPath %>
         </p>
-      </div>
-      <% if (group.projects.nodes?.length > 0) { %>
-        <% for (const project of group.projects) { %>
-          <div class="project-div">
-            <p>
-              Project Name: <%= project.name %>
-            </p>
-            <p>
-              Project Path: <%= project.fullPath %>
-            </p>
-          </div>
+        <% if (group.projects.nodes?.length > 0) { %>
+          <h3>Projects</h3>
+          <% for (const project of group.projects.nodes) { %>
+            <div class="project-div">
+              <p>
+                Project Name: <%= project.name %>
+              </p>
+              <p>
+                Project Path: <%= project.fullPath %>
+              </p>
+            </div>
+            <% } %>
           <% } %>
-        <% } %>
+      </div>
       <% } %>
       <% } else { %>
         <div>
