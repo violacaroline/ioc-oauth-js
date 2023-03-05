@@ -24,7 +24,7 @@ export class HomeController {
    * @param {Function} next - Express next middleware function.
    */
   redirectToGitlab (req, res, next) {
-    res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APPLICATION_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&state=${process.env.STATE}&scope=read_api+read_user`)
+    res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APPLICATION_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&state=${process.env.STATE}&scope=read_api+read_user+read_repository`)
   }
 
   /**
@@ -136,20 +136,21 @@ export class HomeController {
     // `
 
     const query = `
-      query {
-        currentUser {
+    query {
+      currentUser {
         groups {
         nodes {
-          id
           name
+          fullPath
+          avatarUrl
           projects {
-            nodes {
-              id
-              name
-            }
+          nodes {
+            name
+            fullPath
           }
         }
       }
+    }
   }
 }
 `
@@ -162,8 +163,18 @@ export class HomeController {
 
     const response = await axios.post(url, data, { headers })
 
-    console.log('THE GRAPHQL RESPONSE ---------------------------------------------------- ', response.data.data.currentUser.groups)
+    const groups = response.data.data.currentUser.groups.nodes
 
-    res.render('auth/groups')
+    groups.forEach(group => {
+      console.log('EACH GROUP GRAPHQL RESPONSE ------------------------------------------------------------- ')
+      console.log('Group name: ', group.name)
+      console.log('Group avatarUrl: ', group.avatarUrl)
+      console.log('Group path: ', group.fullPath)
+      console.log('Group projects: ', group.projects.nodes)
+    })
+
+    // console.log('THE GRAPHQL RESPONSE ---------------------------------------------------- ', response.data.data.currentUser.groups)
+
+    res.render('auth/groups', { groups })
   }
 }

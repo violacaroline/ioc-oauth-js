@@ -35,7 +35,7 @@ nav {
   text-align: center;
 }
 
-.profile, .events {
+.profile, .events, .groups {
   width: 100vw;
   height: 100vh;
 }
@@ -82,4 +82,10 @@ tr {
 
 tr:nth-child(even) {
   background-color: #e6e9e9;
+}
+
+.group-div, .project-div {
+  margin: 5px;
+  padding: 5px;
+  border: 1.5px solid #ddd;
 }
