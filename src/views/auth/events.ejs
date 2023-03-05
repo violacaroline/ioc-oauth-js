@@ -1,0 +1,39 @@
+<div class="events">
+  <h1>Events</h1>
+  <table class="table-container">
+    <thead>
+      <tr>
+        <th class="table-headings">Action Name</th>
+        <th class="table-headings">Created At</th>
+        <th class="table-headings">Target Title</th>
+        <th class="table-headings">Target Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (events?.length> 0) { %>
+        <% for (const event of events) { %>
+          <tr>
+            <td class="table-events">
+              <%= event.action_name %>
+            </td>
+            <td class="table-events">
+              <%= event.created_at %>
+            </td>
+            <td class="table-events">
+              <%= event.target_title %>
+            </td>
+            <td class="table-events">
+              <%= event.target_type %>
+            </td>
+          </tr>
+          <% } %>
+            <% } else { %>
+              <tr>
+                <td class="table-no-events">
+                  There are no events to display
+                </td>
+              </tr>
+              <% } %>
+    </tbody>
+  </table>
+</div>

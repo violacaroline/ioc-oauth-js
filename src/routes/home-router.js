@@ -12,3 +12,7 @@ router.get('/auth/gitlab', (req, res, next) => controller.redirectToGitlab(req, 
 router.get('/auth/gitlab/callback', (req, res, next) => controller.successAuthorization(req, res, next))
 
 router.get('/auth/profile', (req, res, next) => controller.profile(req, res, next))
+
+router.get('/auth/events', (req, res, next) => controller.events(req, res, next))
+
+router.get('/auth/groups', (req, res, next) => controller.groups(req, res, next))

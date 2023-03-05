@@ -1,3 +1,10 @@
-<div>
-  <h1>Profile</h1>
+<div class="profile">
+  <button><a href="<%=baseURL%>/auth/events">My Events</a></button><button><a href="<%=baseURL%>/auth/groups">My Groups & Projects</a></button>
+  <h1>Profile &hearts;</h1>
+  <h2>Name: <%= data.name %></h2>
+  <h4>Username: <%= data.username %></h4>
+  <h4>User Id: <%= data.id %></h4>
+  <h4>Email: <%= data.email %></h4>
+  <h4>Last Activity: <%= data.current_sign_in_at %></h4>
+  <img src="<%= data.avatar_url %>" alt="Profile Picture">
 </div>

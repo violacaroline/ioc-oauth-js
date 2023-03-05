@@ -23,14 +23,17 @@ try {
 
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
-  // app.use(
-  //   helmet.contentSecurityPolicy({
-  //     directives: {
-  //       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-  //       'form-action': ["'self'", 'https://gitlab.lnu.se']
-  //     }
-  //   })
-  // )
+  // app.use(helmet({
+  //   crossOriginEmbedderPolicy: false
+  // }))
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'img-src': ["'self'", 'https://gitlab.lnu.se']
+      }
+    })
+  )
 
   // Set the base URL to use for all relative URLs in a document.
   const baseURL = process.env.BASE_URL || '/'
