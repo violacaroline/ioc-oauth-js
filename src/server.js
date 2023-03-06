@@ -23,9 +23,11 @@ try {
 
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
-  // app.use(helmet({
-  //   crossOriginEmbedderPolicy: false
-  // }))
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: 'cross-origin'
+  }))
   app.use(
     helmet.contentSecurityPolicy({
       directives: {

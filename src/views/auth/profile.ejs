@@ -5,6 +5,6 @@
   <h4>Username: <%= data.username %></h4>
   <h4>User Id: <%= data.id %></h4>
   <h4>Email: <%= data.email %></h4>
-  <h4>Last Activity: <%= data.current_sign_in_at.replace('T', ' ').substring(0, 19) %></h4>
+  <h4>Last Activity: <%= data.last_activity_on %></h4>
   <img src="<%= data.avatar_url %>" alt="Profile Picture">
 </div>
