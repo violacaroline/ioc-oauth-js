@@ -80,11 +80,23 @@ export class HomeController {
   async events (req, res, next) {
     const accessToken = req.session.accessToken
     // console.log('ACCESSTOKEN FROM EVENTS ------------------------ ', accessToken)
+    const perPage = 70
+    let page = 1
+    let hasNextPage = true
+    let events = []
 
-    const { data } = await axios.get(`https://gitlab.lnu.se/api/v4/events?access_token=${accessToken}`)
+    while (hasNextPage) {
+      const response = await axios.get(`https://gitlab.lnu.se/api/v4/events?&per_page=${perPage}&page=${page}&access_token=${accessToken}`)
 
-    // console.log('The events data ------------------------ ', data)
-    const events = data
+      events = events.concat(response.data)
+
+      const linkHeader = response.headers.link
+      if (!linkHeader || !linkHeader.includes('rel="next"')) {
+        hasNextPage = false
+      }
+
+      page++
+    }
 
     res.render('auth/events', { events })
   }
@@ -170,13 +182,13 @@ export class HomeController {
 
     const groups = response.data.data.currentUser.groups.nodes
 
-    groups.forEach(group => {
-      console.log('EACH GROUP GRAPHQL RESPONSE ------------------------------------------------------------- ')
-      console.log('Group name: ', group.name)
-      console.log('Group avatarUrl: ', group.avatarUrl)
-      console.log('Group path: ', group.fullPath)
-      console.log('Group projects: ', group.projects.nodes)
-    })
+    // groups.forEach(group => {
+    //   console.log('EACH GROUP GRAPHQL RESPONSE ------------------------------------------------------------- ')
+    //   console.log('Group name: ', group.name)
+    //   console.log('Group avatarUrl: ', group.avatarUrl)
+    //   console.log('Group path: ', group.fullPath)
+    //   console.log('Group projects: ', group.projects.nodes)
+    // })
 
     res.render('auth/groups', { groups })
   }

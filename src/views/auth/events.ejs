@@ -10,11 +10,12 @@
       </tr>
     </thead>
     <tbody>
-      <% if (events?.length> 0) { %>
+      <% if (events?.length > 0) { %>
+        <% let counter = 1; %>
         <% for (const event of events) { %>
           <tr>
             <td class="table-events">
-              <%= event.action_name %>
+              <%= counter %>. <%= event.action_name %>
             </td>
             <td class="table-events">
               <%= event.created_at.replace('T', ' ').substring(0, 19) %>
@@ -24,8 +25,9 @@
             </td>
             <td class="table-events">
               <%= event.target_type %>
-            </td>
+            </td>         
           </tr>
+          <% counter++; %>
           <% } %>
             <% } else { %>
               <tr>
