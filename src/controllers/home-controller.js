@@ -108,52 +108,55 @@ export class HomeController {
 
     // const { data } = await axios.get(`https://gitlab.lnu.se/api/v4/groups?access_token=${accessToken}`)
 
-    // console.log('The group data ------------------------ ', data)
-    //   const query = `
-    //   query {
-    //     currentUser {
-    //       groups(first: 1) {
-    //         nodes {
-    //           name
-    //           projects(first: 1) {
-    //             nodes {
-    //               name
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // `
-    //   const query = `
-    //     query {
-    //       currentUser {
-    //       name
-    //       id
-    //       username
-    //     }
-    //   }
-    // `
-
     const query = `
-    query {
-      currentUser {
-        groups {
-        nodes {
-          name
-          fullPath
-          avatarUrl
-          projects {
-          nodes {
-            name
-            fullPath
+        query {
+          currentUser {
+            groups(first: 3) {
+            nodes {
+              name
+              fullPath
+              webUrl
+              avatarUrl
+              projects(first: 5) {
+              nodes {
+                name
+                fullPath
+                webUrl
+              }
+            }
           }
         }
       }
     }
-  }
-}
-`
+    `
+
+    // const queryTwo = `
+    // query {
+    //   currentUser {
+    //     groups {
+    //     nodes {
+    //       name
+    //       fullPath
+    //       avatarUrl
+    //       projects {
+    //       nodes {
+    //         name
+    //         fullPath
+    //         repository {
+    //           tree {
+    //             lastCommit {
+    //               authorName
+    //               authoredDate
+    //             }
+    //           }
+    //         }
+    //       }
+    //       }
+    //     }
+    //     }
+    //   }
+    // }`
+
     const url = 'https://gitlab.lnu.se/api/graphql'
     const headers = {
       'Content-Type': 'application/json',
@@ -162,6 +165,8 @@ export class HomeController {
     const data = JSON.stringify({ query })
 
     const response = await axios.post(url, data, { headers })
+
+    // console.log('GRAPHQL RESPONSE--------------------------------------------------------', response.data)
 
     const groups = response.data.data.currentUser.groups.nodes
 
@@ -172,8 +177,6 @@ export class HomeController {
       console.log('Group path: ', group.fullPath)
       console.log('Group projects: ', group.projects.nodes)
     })
-
-    // console.log('THE GRAPHQL RESPONSE ---------------------------------------------------- ', response.data.data.currentUser.groups)
 
     res.render('auth/groups', { groups })
   }

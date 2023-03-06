@@ -5,6 +5,7 @@
  * @version 1.0.0
  */
 
+import cors from 'cors'
 import express from 'express'
 import expressLayouts from 'express-ejs-layouts'
 import { dirname, join } from 'path'
@@ -21,12 +22,13 @@ try {
   // Get the directory name of this module's path.
   const directoryFullName = dirname(fileURLToPath(import.meta.url))
 
+  app.use(cors({
+    origin: ['https://gitlab.lnu.se']
+  }))
+
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
-  app.use(helmet())
   app.use(helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-    crossOriginResourcePolicy: 'cross-origin'
+    crossOriginEmbedderPolicy: false
   }))
   app.use(
     helmet.contentSecurityPolicy({

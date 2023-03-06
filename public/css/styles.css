@@ -23,6 +23,11 @@ nav {
   text-transform: uppercase;
 }
 
+img {
+  height: 50px;
+  width: 50px;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -82,11 +87,28 @@ tr {
 }
 
 tr:nth-child(even) {
-  background-color: #e6e9e9;
+  background-color: rgb(255, 255, 255);
 }
 
-.group-div, .project-div {
+.group-div {
+  margin: 5px;
+  padding: 10px;
+  border: 0.5px solid #ddd;
+}
+
+.group-div h3, .project-div h4 {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 2px;
+  color: crimson;
+}
+
+.project-div {
   margin: 5px;
   padding: 5px;
-  border: 0.5px solid crimson;
+  background-color: rgb(255, 255, 255);
+}
+
+.project-div a {
+  color: black;
+  text-decoration: underline;
 }
