@@ -105,23 +105,66 @@ export class HomeController {
     const accessToken = req.session.accessToken
     console.log('ACCESSTOKEN FROM GROUPS ------------------------ ', accessToken)
 
+    //   const query = `
+    //   query {
+    //     currentUser {
+    //       groups {
+    //         nodes {
+    //           name
+    //           fullPath
+    //           avatarUrl
+    //           projects {
+    //             nodes {
+    //               name
+    //               fullPath
+    //               repository {
+    //                 tree {
+    //                   lastCommit {
+    //                     authorName
+    //                     authoredDate
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // `
+
     const query = `
     query {
       currentUser {
-        groups {
+        groups(first: 3) {
+          pageInfo {
+            hasNextPage
+          }
           nodes {
             name
-            fullPath
+            webUrl
             avatarUrl
-            projects {
+            fullPath
+            projects(first: 5, includeSubgroups: true) {
+              pageInfo {
+                hasNextPage
+              }
               nodes {
                 name
+                webUrl
+                avatarUrl
                 fullPath
+                nameWithNamespace
+                lastActivityAt #date of last commit or push event
                 repository {
                   tree {
                     lastCommit {
-                      authorName
                       authoredDate
+                      author {
+                        name
+                        avatarUrl
+                        username
+                      }
                     }
                   }
                 }
@@ -131,7 +174,7 @@ export class HomeController {
         }
       }
     }
-  `
+    `
 
     const headers = {
       'Content-Type': 'application/json',
@@ -149,6 +192,7 @@ export class HomeController {
     console.log('GRAPHQL RESPONSE-----------------------------------------------', result.data.currentUser.groups.nodes)
 
     const groups = result.data.currentUser.groups.nodes
+    const projects = []
 
     groups.forEach(group => {
       console.log('EACH GROUP GRAPHQL RESPONSE ------------------------------------ ')
@@ -157,10 +201,15 @@ export class HomeController {
       console.log('Group path: ', group.fullPath)
       const projects = group.projects.nodes
       projects.forEach(project => {
-        console.log('Project repo: ', project.repository)
+        console.log('Project repo author: ', project.repository.tree.lastCommit.author)
+        const lastCommit = project.repository.tree.lastCommit
+        const projectWithCommit = { ...project, lastCommit }
+        projects.push(projectWithCommit)
       })
     })
 
-    res.render('user/groups', { groups })
+    const data = { groups, projects }
+
+    res.render('user/groups', { data })
   }
 }
