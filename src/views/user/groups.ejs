@@ -1,9 +1,8 @@
 <div class="groups">
   <button class="nav-button"><a href="<%=baseURL%>/user/events">My Events</a></button><button class="nav-button"><a href="<%=baseURL%>/user/groups">My Groups & Projects</a></button>
   <h1>Groups & Projects</h1>
-  <% if (data.groups?.length > 0) { %>
-    
-    <% for (const group of data.groups) { %>
+  <% if (groups.nodes?.length > 0) { %>   
+    <% for (const group of groups.nodes) { %>
       <div class="group-div">
         <h3>Group</h3>
         <h4>
@@ -16,9 +15,7 @@
           <h3>Projects</h3>
           <% for (const project of group.projects.nodes) { %>
             <div class="project-div">
-              <h4>
-                <%= project.name %>
-              </h4>
+              <h4><%= project.name %></h4>
               <a href="<%= project.webUrl %>"><%= project.fullPath %></a>
               <h5>Last Commit</h5>
               <% if (project.repository?.tree?.lastCommit) { %>
@@ -29,18 +26,19 @@
                 <p>No Last Commit</p>
               <% } %>
             </div>
-            <% } %>
-          <% } else { %>
-            <div>
-              <p>
-                There are no projects to display
-              </p>
-            </div>
-            <% } %>
-            <% if (data.groups.pageInfo && data.groups.pageInfo.hasNextPage) { %>
-              <p>There are more groups available...</p>
-            <% } %>
+          <% } %>
+          <% if (group.projects.pageInfo && group.projects.pageInfo.hasNextPage) { %>
+            <p style="color: crimson; font-size: 1.2em; letter-spacing: 1px;">There are more projects available...</p>
+          <% } %>
+        <% } else { %>
+          <div>
+            <p>There are no projects to display</p>
+          </div>
+        <% } %>
       </div>
+      <% } %>
+      <% if (groups.pageInfo && groups.pageInfo.hasNextPage) { %>
+        <p style="color: crimson; font-size: 1.2em; letter-spacing: 1px;">There are more groups available...</p>
       <% } %>
       <% } else { %>
         <div>

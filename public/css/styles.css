@@ -109,9 +109,6 @@ tr:nth-child(even) {
   padding: 5px 10px;
   margin: 10px 0;
   border-bottom: 1px solid #fafafa;
-}
-
-.group-div:hover {
   box-shadow: 1px 3px 5px rgba(0,0,0,0.1);
 }
 

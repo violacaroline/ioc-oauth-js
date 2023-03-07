@@ -105,34 +105,6 @@ export class HomeController {
     const accessToken = req.session.accessToken
     console.log('ACCESSTOKEN FROM GROUPS ------------------------ ', accessToken)
 
-    //   const query = `
-    //   query {
-    //     currentUser {
-    //       groups {
-    //         nodes {
-    //           name
-    //           fullPath
-    //           avatarUrl
-    //           projects {
-    //             nodes {
-    //               name
-    //               fullPath
-    //               repository {
-    //                 tree {
-    //                   lastCommit {
-    //                     authorName
-    //                     authoredDate
-    //                   }
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // `
-
     const query = `
     query {
       currentUser {
@@ -154,8 +126,6 @@ export class HomeController {
                 webUrl
                 avatarUrl
                 fullPath
-                nameWithNamespace
-                lastActivityAt #date of last commit or push event
                 repository {
                   tree {
                     lastCommit {
@@ -190,26 +160,17 @@ export class HomeController {
     const result = await response.json()
 
     console.log('GRAPHQL RESPONSE-----------------------------------------------', result.data.currentUser.groups.nodes)
+    console.log('Group pageInfo', result.data.currentUser.groups.pageInfo)
 
-    const groups = result.data.currentUser.groups.nodes
-    const projects = []
+    const groups = result.data.currentUser.groups
 
-    groups.forEach(group => {
-      console.log('EACH GROUP GRAPHQL RESPONSE ------------------------------------ ')
-      console.log('Group name: ', group.name)
-      console.log('Group avatarUrl: ', group.avatarUrl)
-      console.log('Group path: ', group.fullPath)
+    groups.nodes.forEach(group => {
       const projects = group.projects.nodes
       projects.forEach(project => {
         console.log('Project repo author: ', project.repository.tree.lastCommit.author)
-        const lastCommit = project.repository.tree.lastCommit
-        const projectWithCommit = { ...project, lastCommit }
-        projects.push(projectWithCommit)
       })
     })
 
-    const data = { groups, projects }
-
-    res.render('user/groups', { data })
+    res.render('user/groups', { groups })
   }
 }
