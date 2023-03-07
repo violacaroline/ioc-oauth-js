@@ -40,15 +40,9 @@ img {
   text-align: center;
 }
 
-.profile, .events {
+.groups, .profile, .events {
   width: 100vw;
   height: 100vh;
-}
-
-.groups {
-  width: 100vw;
-  height: 100vh;
-  text-align: center;
 }
 
 a {

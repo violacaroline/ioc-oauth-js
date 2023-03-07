@@ -64,10 +64,10 @@ export class HomeController {
 
     const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
 
-    // console.log('The user data ------------------------ ', data)
+    // console.log('The user data -------------------------------- ', data)
 
     req.session.accessToken = accessToken
-    res.render('auth/profile', { data })
+    res.render('user/profile', { data })
   }
 
   /**
@@ -91,7 +91,7 @@ export class HomeController {
       page++
     }
 
-    res.render('auth/events', { events })
+    res.render('user/events', { events })
   }
 
   /**
@@ -175,6 +175,6 @@ export class HomeController {
     //   console.log('Group projects: ', group.projects.nodes)
     // })
 
-    res.render('auth/groups', { groups })
+    res.render('user/groups', { groups })
   }
 }
