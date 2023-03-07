@@ -79,21 +79,14 @@ export class HomeController {
    */
   async events (req, res, next) {
     const accessToken = req.session.accessToken
-    // console.log('ACCESSTOKEN FROM EVENTS ------------------------ ', accessToken)
     const perPage = 70
     let page = 1
-    let hasNextPage = true
     let events = []
 
-    while (hasNextPage) {
+    for (let i = 0; i < 2; i++) {
       const response = await axios.get(`https://gitlab.lnu.se/api/v4/events?&per_page=${perPage}&page=${page}&access_token=${accessToken}`)
 
       events = events.concat(response.data)
-
-      const linkHeader = response.headers.link
-      if (!linkHeader || !linkHeader.includes('rel="next"')) {
-        hasNextPage = false
-      }
 
       page++
     }
