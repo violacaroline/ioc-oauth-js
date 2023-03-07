@@ -52,7 +52,7 @@ export class HomeController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async profile (req, res, next) {
+  async getProfile (req, res, next) {
     // console.log('REFRESH TOKEN -------------------------------', req.session.refreshToken)
     const refreshToken = req.session.refreshToken
 
@@ -62,7 +62,7 @@ export class HomeController {
     const accessToken = response.data.access_token
     console.log('RESPONSE FROM PROFILE ------------------------------------------', accessToken)
 
-    const { data } = await axios.get(`https://gitlab.lnu.se/api/v4/user?access_token=${accessToken}`)
+    const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
 
     // console.log('The user data ------------------------ ', data)
 
@@ -77,14 +77,14 @@ export class HomeController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async events (req, res, next) {
+  async getEvents (req, res, next) {
     const accessToken = req.session.accessToken
     const perPage = 70
     let page = 1
     let events = []
 
     for (let i = 0; i < 2; i++) {
-      const response = await axios.get(`https://gitlab.lnu.se/api/v4/events?&per_page=${perPage}&page=${page}&access_token=${accessToken}`)
+      const response = await axios.get(`${process.env.GITLAB_REST_API}/events?&per_page=${perPage}&page=${page}&access_token=${accessToken}`)
 
       events = events.concat(response.data)
 
@@ -101,17 +101,9 @@ export class HomeController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async groups (req, res, next) {
+  async getGroupsAndProjects (req, res, next) {
     const accessToken = req.session.accessToken
     console.log('ACCESSTOKEN FROM GROUPS ------------------------ ', accessToken)
-
-    // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
-
-    // const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
-    // const accessToken = response.data.access_token
-    // console.log('The ACCESSTOKEN ------------------------ ', accessToken)
-
-    // const { data } = await axios.get(`https://gitlab.lnu.se/api/v4/groups?access_token=${accessToken}`)
 
     const query = `
         query {
@@ -162,14 +154,14 @@ export class HomeController {
     //   }
     // }`
 
-    const url = 'https://gitlab.lnu.se/api/graphql'
+    // const url = 'https://gitlab.lnu.se/api/graphql'
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`
     }
     const data = JSON.stringify({ query })
 
-    const response = await axios.post(url, data, { headers })
+    const response = await axios.post(process.env.GITLAB_GRAPHQL_API, data, { headers })
 
     // console.log('GRAPHQL RESPONSE--------------------------------------------------------', response.data)
 

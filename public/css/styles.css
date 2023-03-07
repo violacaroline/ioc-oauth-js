@@ -40,9 +40,15 @@ img {
   text-align: center;
 }
 
-.profile, .events, .groups {
+.profile, .events {
   width: 100vw;
   height: 100vh;
+}
+
+.groups {
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
 }
 
 a {
@@ -92,21 +98,31 @@ tr:nth-child(even) {
 }
 
 .group-div {
-  margin: 5px;
-  padding: 10px;
-  border: 0.5px solid #ddd;
+  text-align: left;
+  padding: 5px 10px;
+  margin: 10px 0;
+  border-bottom: 1px solid #fafafa;
 }
 
-.group-div h3, .project-div h4 {
+.group-div:hover {
+  box-shadow: 1px 3px 5px rgba(0,0,0,0.1);
+}
+
+.group-div h3 {
   font-family: Arial, Helvetica, sans-serif;
   letter-spacing: 2px;
   color: crimson;
 }
 
 .project-div {
-  margin: 5px;
-  padding: 5px;
-  background-color: rgb(255, 255, 255);
+  text-align: left;
+  padding: 5px 10px;
+  margin: 10px 0;
+  border-bottom: 1px solid #fafafa;
+}
+
+.project-div:hover {
+  box-shadow: 1px 3px 5px rgba(0,0,0,0.1);
 }
 
 .project-div a {
