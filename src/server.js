@@ -45,13 +45,6 @@ try {
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
 
-  // Set up the session middleware
-  app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true
-  }))
-
   // View engine setup.
   app.set('view engine', 'ejs')
   app.set('views', join(directoryFullName, 'views'))
@@ -67,6 +60,13 @@ try {
 
   // Parse requests of the content type application/json.
   app.use(express.json())
+
+  // Set up the session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+  }))
 
   // Middleware to be executed before the routes.
   app.use((req, res, next) => {

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import fetch from 'node-fetch'
 
 /**
  * Home controller.
@@ -40,7 +41,7 @@ export class HomeController {
 
     const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
 
-    req.session.refreshToken = response.data.refresh_token
+    req.session.accessToken = response.data.access_token
     // console.log('REFRESH TOKEN -------------------------------', req.session.refreshToken)
     res.render('auth/welcome')
   }
@@ -54,19 +55,18 @@ export class HomeController {
    */
   async getProfile (req, res, next) {
     // console.log('REFRESH TOKEN -------------------------------', req.session.refreshToken)
-    const refreshToken = req.session.refreshToken
+    const accessToken = req.session.accessToken
 
-    const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
+    // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
 
-    const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
-    const accessToken = response.data.access_token
-    console.log('RESPONSE FROM PROFILE ------------------------------------------', accessToken)
+    // const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
+    // const accessToken = response.data.access_token
+    // console.log('RESPONSE FROM PROFILE ------------------------------------------', accessToken)
 
     const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
 
     // console.log('The user data -------------------------------- ', data)
 
-    req.session.accessToken = accessToken
     res.render('user/profile', { data })
   }
 
@@ -106,74 +106,60 @@ export class HomeController {
     console.log('ACCESSTOKEN FROM GROUPS ------------------------ ', accessToken)
 
     const query = `
-        query {
-          currentUser {
-            groups(first: 3) {
-            nodes {
-              name
-              fullPath
-              webUrl
-              avatarUrl
-              projects(first: 5) {
+    query {
+      currentUser {
+        groups {
+          nodes {
+            name
+            fullPath
+            avatarUrl
+            projects {
               nodes {
                 name
                 fullPath
-                webUrl
+                repository {
+                  tree {
+                    lastCommit {
+                      authorName
+                      authoredDate
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
     }
-    `
+  `
 
-    // const queryTwo = `
-    // query {
-    //   currentUser {
-    //     groups {
-    //     nodes {
-    //       name
-    //       fullPath
-    //       avatarUrl
-    //       projects {
-    //       nodes {
-    //         name
-    //         fullPath
-    //         repository {
-    //           tree {
-    //             lastCommit {
-    //               authorName
-    //               authoredDate
-    //             }
-    //           }
-    //         }
-    //       }
-    //       }
-    //     }
-    //     }
-    //   }
-    // }`
-
-    // const url = 'https://gitlab.lnu.se/api/graphql'
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`
     }
-    const data = JSON.stringify({ query })
 
-    const response = await axios.post(process.env.GITLAB_GRAPHQL_API, data, { headers })
+    const response = await fetch(process.env.GITLAB_GRAPHQL_API, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query })
+    })
 
-    // console.log('GRAPHQL RESPONSE--------------------------------------------------------', response.data)
+    const result = await response.json()
 
-    const groups = response.data.data.currentUser.groups.nodes
+    console.log('GRAPHQL RESPONSE-----------------------------------------------', result.data.currentUser.groups.nodes)
 
-    // groups.forEach(group => {
-    //   console.log('EACH GROUP GRAPHQL RESPONSE ------------------------------------------------------------- ')
-    //   console.log('Group name: ', group.name)
-    //   console.log('Group avatarUrl: ', group.avatarUrl)
-    //   console.log('Group path: ', group.fullPath)
-    //   console.log('Group projects: ', group.projects.nodes)
-    // })
+    const groups = result.data.currentUser.groups.nodes
+
+    groups.forEach(group => {
+      console.log('EACH GROUP GRAPHQL RESPONSE ------------------------------------ ')
+      console.log('Group name: ', group.name)
+      console.log('Group avatarUrl: ', group.avatarUrl)
+      console.log('Group path: ', group.fullPath)
+      const projects = group.projects.nodes
+      projects.forEach(project => {
+        console.log('Project repo: ', project.repository)
+      })
+    })
 
     res.render('user/groups', { groups })
   }

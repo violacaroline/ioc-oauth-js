@@ -23,6 +23,19 @@ nav {
   text-transform: uppercase;
 }
 
+.nav-button {
+  min-width: fit-content;
+  background: crimson;
+  white-space: nowrap;
+  border: none;
+  padding: 10px;
+  letter-spacing: 1.5px;
+  border-radius: 20px;
+  font-family: serif;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px;
+  transition: all 1s;
+}
+
 img {
   height: 60px;
   width: 60px;
