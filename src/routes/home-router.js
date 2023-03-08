@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => controller.index(req, res, next))
 
 router.get('/auth/gitlab', (req, res, next) => controller.redirectToGitlab(req, res, next))
 
-router.get('/auth/gitlab/callback', (req, res, next) => controller.successAuthorization(req, res, next))
+router.get('/auth/gitlab/callback', (req, res, next) => controller.logIn(req, res, next))
 
 router.get('/user/profile', (req, res, next) => controller.getProfile(req, res, next))
 

@@ -76,6 +76,12 @@ try {
     //   delete req.session.flash
     // }
 
+    if (req.session.accessToken) {
+      res.locals.user = true
+    } else {
+      res.locals.user = false
+    }
+
     // Pass the base URL to the views.
     res.locals.baseURL = baseURL
     // console.log(res.locals.baseURL)

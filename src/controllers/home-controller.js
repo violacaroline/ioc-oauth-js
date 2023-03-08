@@ -1,10 +1,22 @@
 import axios from 'axios'
 import fetch from 'node-fetch'
+import { HomeService } from '../service/home-service.js'
 
 /**
  * Home controller.
  */
 export class HomeController {
+  #service
+
+  /**
+   * Hkahssöfkjhsd.
+   *
+   * @param {HomeService} service - lkshdfoihsdg
+   */
+  constructor (service = new HomeService()) {
+    this.#service = service
+  }
+
   /**
    * Renders a view and sends the rendered HTML string as an HTTP response.
    * index GET.
@@ -35,12 +47,13 @@ export class HomeController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async successAuthorization (req, res, next) {
+  async logIn (req, res, next) {
     const code = req.query.code
     const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&code=${code}&grant_type=authorization_code&redirect_uri=${process.env.REDIRECT_URI}`
 
     const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
 
+    // req.session.user = response
     req.session.accessToken = response.data.access_token
     res.render('auth/welcome')
   }
@@ -73,17 +86,18 @@ export class HomeController {
    */
   async getEvents (req, res, next) {
     const accessToken = req.session.accessToken
-    const perPage = 70
-    let page = 1
-    let events = []
+    // const perPage = 70
+    // let page = 1
+    // let events = []
 
-    for (let i = 0; i < 2; i++) {
-      const response = await axios.get(`${process.env.GITLAB_REST_API}/events?&per_page=${perPage}&page=${page}&access_token=${accessToken}`)
+    // for (let i = 0; i < 2; i++) {
+    //   const response = await axios.get(`${process.env.GITLAB_REST_API}/events?&per_page=${perPage}&page=${page}&access_token=${accessToken}`)
 
-      events = events.concat(response.data)
+    //   events = events.concat(response.data)
 
-      page++
-    }
+    //   page++
+    // }
+    const events = await this.#service.getEvents(accessToken)
 
     res.render('user/events', { events })
   }
