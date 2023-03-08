@@ -1,5 +1,4 @@
 import axios from 'axios'
-import fetch from 'node-fetch'
 import { HomeService } from '../service/home-service.js'
 
 /**
@@ -9,7 +8,7 @@ export class HomeController {
   #service
 
   /**
-   * Hkahssöfkjhsd.
+   * The HomeController constructor setting its service.
    *
    * @param {HomeService} service - lkshdfoihsdg
    */
@@ -19,7 +18,6 @@ export class HomeController {
 
   /**
    * Renders a view and sends the rendered HTML string as an HTTP response.
-   * index GET.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -53,8 +51,9 @@ export class HomeController {
 
     const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
 
-    // req.session.user = response
     req.session.accessToken = response.data.access_token
+
+    req.session.flash = { type: 'success', text: 'Authorization Successful!' }
     res.render('auth/welcome')
   }
 
@@ -113,61 +112,63 @@ export class HomeController {
     const accessToken = req.session.accessToken
     console.log('ACCESSTOKEN FROM GROUPS ------------------------ ', accessToken)
 
-    const query = `
-    query {
-      currentUser {
-        groups(first: 3) {
-          pageInfo {
-            hasNextPage
-          }
-          nodes {
-            name
-            webUrl
-            avatarUrl
-            fullPath
-            projects(first: 5, includeSubgroups: true) {
-              pageInfo {
-                hasNextPage
-              }
-              nodes {
-                name
-                webUrl
-                avatarUrl
-                fullPath
-                repository {
-                  tree {
-                    lastCommit {
-                      authoredDate
-                      author {
-                        name
-                        avatarUrl
-                        username
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    `
+    // const query = `
+    // query {
+    //   currentUser {
+    //     groups(first: 3) {
+    //       pageInfo {
+    //         hasNextPage
+    //       }
+    //       nodes {
+    //         name
+    //         webUrl
+    //         avatarUrl
+    //         fullPath
+    //         projects(first: 5, includeSubgroups: true) {
+    //           pageInfo {
+    //             hasNextPage
+    //           }
+    //           nodes {
+    //             name
+    //             webUrl
+    //             avatarUrl
+    //             fullPath
+    //             repository {
+    //               tree {
+    //                 lastCommit {
+    //                   authoredDate
+    //                   author {
+    //                     name
+    //                     avatarUrl
+    //                     username
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // `
 
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
-    }
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   Authorization: `Bearer ${accessToken}`
+    // }
 
-    const response = await fetch(process.env.GITLAB_GRAPHQL_API, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ query })
-    })
+    // const response = await fetch(process.env.GITLAB_GRAPHQL_API, {
+    //   method: 'POST',
+    //   headers,
+    //   body: JSON.stringify({ query })
+    // })
 
-    const result = await response.json()
+    // const result = await response.json()
 
-    const groups = result.data.currentUser.groups
+    // const groups = result.data.currentUser.groups
+
+    const groups = await this.#service.getGroups(accessToken)
 
     res.render('user/groups', { groups })
   }

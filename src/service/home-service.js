@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 /**
- * blmljge
+ * The service class.
  */
 export class HomeService {
   /**
@@ -23,5 +23,70 @@ export class HomeService {
     }
 
     return events
+  }
+
+  /**
+   * Get the user groups and projects.
+   *
+   * @param {*} accessToken - The accessToken to authenticate user.
+   */
+  async getGroups (accessToken) {
+    const query = `
+    query {
+      currentUser {
+        groups(first: 3) {
+          pageInfo {
+            hasNextPage
+          }
+          nodes {
+            name
+            webUrl
+            avatarUrl
+            fullPath
+            projects(first: 5, includeSubgroups: true) {
+              pageInfo {
+                hasNextPage
+              }
+              nodes {
+                name
+                webUrl
+                avatarUrl
+                fullPath
+                repository {
+                  tree {
+                    lastCommit {
+                      authoredDate
+                      author {
+                        name
+                        avatarUrl
+                        username
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    `
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    }
+
+    const response = await fetch(process.env.GITLAB_GRAPHQL_API, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query })
+    })
+
+    const result = await response.json()
+
+    const groups = result.data.currentUser.groups
+
+    return groups
   }
 }
