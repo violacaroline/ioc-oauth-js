@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { HomeService } from '../service/home-service.js'
 
 /**
@@ -10,7 +9,7 @@ export class HomeController {
   /**
    * The HomeController constructor setting its service.
    *
-   * @param {HomeService} service - lkshdfoihsdg
+   * @param {HomeService} service - The service to set.
    */
   constructor (service = new HomeService()) {
     this.#service = service
@@ -24,7 +23,11 @@ export class HomeController {
    * @param {Function} next - Express next middleware function.
    */
   index (req, res, next) {
-    res.render('home/index')
+    try {
+      res.render('home/index')
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -35,7 +38,11 @@ export class HomeController {
    * @param {Function} next - Express next middleware function.
    */
   redirectToGitlab (req, res, next) {
-    res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APPLICATION_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&state=${process.env.STATE}&scope=read_api+read_user+read_repository`)
+    try {
+      res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APPLICATION_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&state=${process.env.STATE}&scope=read_api+read_user+read_repository`)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -45,16 +52,20 @@ export class HomeController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async logIn (req, res, next) {
-    const code = req.query.code
-    const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&code=${code}&grant_type=authorization_code&redirect_uri=${process.env.REDIRECT_URI}`
+  async getAccessToken (req, res, next) {
+    try {
+      const code = req.query.code
+      // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&code=${code}&grant_type=authorization_code&redirect_uri=${process.env.REDIRECT_URI}`
 
-    const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
+      // const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
 
-    req.session.accessToken = response.data.access_token
+      req.session.accessToken = await this.#service.getAccessToken(code)
 
-    req.session.flash = { type: 'success', text: 'Authorization Successful!' }
-    res.render('auth/welcome')
+      req.session.flash = { type: 'success', text: 'Authorization Successful!' }
+      res.render('auth/welcome')
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -71,7 +82,9 @@ export class HomeController {
     // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
     // const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
 
-    const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
+    // const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
+
+    const data = await this.#service.getProfile(accessToken)
 
     res.render('user/profile', { data })
   }

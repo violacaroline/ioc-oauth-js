@@ -5,7 +5,7 @@
  * @version 1.0.0
  */
 
-import cors from 'cors'
+// import cors from 'cors'
 import express from 'express'
 import expressLayouts from 'express-ejs-layouts'
 import { dirname, join } from 'path'
@@ -22,9 +22,9 @@ try {
   // Get the directory name of this module's path.
   const directoryFullName = dirname(fileURLToPath(import.meta.url))
 
-  app.use(cors({
-    origin: ['https://gitlab.lnu.se']
-  }))
+  // app.use(cors({
+  //   origin: ['https://gitlab.lnu.se']
+  // }))
 
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet({
@@ -63,9 +63,10 @@ try {
 
   // Set up the session middleware
   app.use(session({
+    name: process.env.SESSION_NAME,
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
   }))
 
   // Middleware to be executed before the routes.
@@ -84,7 +85,6 @@ try {
 
     // Pass the base URL to the views.
     res.locals.baseURL = baseURL
-    // console.log(res.locals.baseURL)
 
     next()
   })

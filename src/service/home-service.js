@@ -5,9 +5,35 @@ import axios from 'axios'
  */
 export class HomeService {
   /**
+   * Get the access token for authorization.
+   *
+   * @param {*} code - The response code used to recieve access token.
+   */
+  async getAccessToken (code) {
+    const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&code=${code}&grant_type=authorization_code&redirect_uri=${process.env.REDIRECT_URI}`
+
+    const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
+
+    const accessToken = response.data.access_token
+
+    return accessToken
+  }
+
+  /**
+   * Get the user profile.
+   *
+   * @param {*} accessToken - The access token to authorize the user.
+   */
+  async getProfile (accessToken) {
+    const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
+
+    return data
+  }
+
+  /**
    * Get the user events.
    *
-   * @param {*} accessToken - The accessToken to authenticate user.
+   * @param {*} accessToken - The access token to authorize the user.
    */
   async getEvents (accessToken) {
     const perPage = 70
