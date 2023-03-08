@@ -129,7 +129,7 @@ tr:nth-child(even) {
   box-shadow: 1px 3px 5px rgba(0,0,0,0.1);
 }
 
-.project-div a {
+.group-div a, .project-div a {
   color: black;
   text-decoration: underline;
 }

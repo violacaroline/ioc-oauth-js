@@ -5,22 +5,25 @@
     <% for (const group of groups.nodes) { %>
       <div class="group-div">
         <h3>Group</h3>
-        <h4>
-          <%= group.name %>
-        </h4>
+        <h4><%= group.name %></h4>
+        <a href="<%= group.webUrl %>"><%= group.fullPath %></a>
         <% if (group.avatarUrl) { %>
-          <img src="<%= group.avatarUrl %>" alt="Group avatar">
-        <% } %><a href="<%= group.webUrl %>"><%= group.fullPath %></a>
+          <img src="<%= group.avatarUrl %>" alt="Group Avatar">
+        <% } %>
         <% if (group.projects.nodes?.length > 0) { %>
           <h3>Projects</h3>
           <% for (const project of group.projects.nodes) { %>
             <div class="project-div">
               <h4><%= project.name %></h4>
+              <% if (project.avatarUrl) { %>
+                <img src="<%= project.avatarUrl %>" alt="Project Avatar">
+              <% } %>
               <a href="<%= project.webUrl %>"><%= project.fullPath %></a>
               <h5>Last Commit</h5>
               <% if (project.repository?.tree?.lastCommit) { %>
                 <img src="<%= !project.repository.tree.lastCommit.author.avatarUrl.includes('https') ? 'https://gitlab.lnu.se' + project.repository.tree.lastCommit.author.avatarUrl : project.repository.tree.lastCommit.author.avatarUrl %>" alt="Author Avatar">
                 <p>Author: <%= project.repository.tree.lastCommit.author.name %></p>
+                <p>Username: <%= project.repository.tree.lastCommit.author.username %></p>
                 <p>Date: <%= project.repository.tree.lastCommit.authoredDate.replace('T', ' ').substring(0, 19) %></p>
               <% } else { %>
                 <p>No Last Commit</p>

@@ -42,7 +42,6 @@ export class HomeController {
     const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
 
     req.session.accessToken = response.data.access_token
-    // console.log('REFRESH TOKEN -------------------------------', req.session.refreshToken)
     res.render('auth/welcome')
   }
 
@@ -54,18 +53,13 @@ export class HomeController {
    * @param {Function} next - Express next middleware function.
    */
   async getProfile (req, res, next) {
-    // console.log('REFRESH TOKEN -------------------------------', req.session.refreshToken)
     const accessToken = req.session.accessToken
 
+    // GET REFRESHTOKEN???
     // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
-
     // const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
-    // const accessToken = response.data.access_token
-    // console.log('RESPONSE FROM PROFILE ------------------------------------------', accessToken)
 
     const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
-
-    // console.log('The user data -------------------------------- ', data)
 
     res.render('user/profile', { data })
   }
@@ -159,17 +153,7 @@ export class HomeController {
 
     const result = await response.json()
 
-    console.log('GRAPHQL RESPONSE-----------------------------------------------', result.data.currentUser.groups.nodes)
-    console.log('Group pageInfo', result.data.currentUser.groups.pageInfo)
-
     const groups = result.data.currentUser.groups
-
-    groups.nodes.forEach(group => {
-      const projects = group.projects.nodes
-      projects.forEach(project => {
-        console.log('Project repo author: ', project.repository.tree.lastCommit.author)
-      })
-    })
 
     res.render('user/groups', { groups })
   }
