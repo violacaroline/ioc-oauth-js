@@ -1,20 +1,25 @@
 import express from 'express'
-import { HomeController } from '../controllers/home-controller.js'
 
 export const router = express.Router()
 
-const controller = new HomeController()
+/**
+ * Resolves a HomeController object from the IoC container.
+ *
+ * @param {object} req - Express request object.
+ * @returns {object} An object that can act as a HomeController object.
+ */
+const resolveHomeController = (req) => req.app.get('container').resolve('HomeController')
 
-router.get('/', (req, res, next) => controller.index(req, res, next))
+router.get('/', (req, res, next) => resolveHomeController(req).index(req, res, next))
 
-router.get('/auth/gitlab', (req, res, next) => controller.redirectToGitlab(req, res, next))
+router.get('/auth/gitlab', (req, res, next) => resolveHomeController(req).redirectToGitlab(req, res, next))
 
-router.get('/auth/gitlab/callback', (req, res, next) => controller.getAccessToken(req, res, next))
+router.get('/auth/gitlab/callback', (req, res, next) => resolveHomeController(req).getAccessToken(req, res, next))
 
-router.get('/user/profile', (req, res, next) => controller.getProfile(req, res, next))
+router.get('/user/profile', (req, res, next) => resolveHomeController(req).getProfile(req, res, next))
 
-router.get('/user/events', (req, res, next) => controller.getEvents(req, res, next))
+router.get('/user/events', (req, res, next) => resolveHomeController(req).getEvents(req, res, next))
 
-router.get('/user/groups', (req, res, next) => controller.getGroupsAndProjects(req, res, next))
+router.get('/user/groups', (req, res, next) => resolveHomeController(req).getGroupsAndProjects(req, res, next))
 
-router.get('/user/logout', (req, res, next) => controller.logOut(req, res, next))
+router.get('/user/logout', (req, res, next) => resolveHomeController(req).logOut(req, res, next))

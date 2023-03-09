@@ -60,7 +60,7 @@ export class HomeController {
 
       req.session.flash = { type: 'success', text: 'Authorization Successful!' }
 
-      res.render('auth/welcome')
+      res.redirect('/user/profile')
     } catch (error) {
       next(error)
     }
@@ -75,6 +75,11 @@ export class HomeController {
    */
   async getProfile (req, res, next) {
     try {
+      if (!req.session.accessToken) {
+        const error = new Error('Unauthorized')
+        error.status = 401
+        throw error
+      }
       const accessToken = req.session.accessToken
       // GET REFRESHTOKEN???
       // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
@@ -99,6 +104,11 @@ export class HomeController {
    */
   async getEvents (req, res, next) {
     try {
+      if (!req.session.accessToken) {
+        const error = new Error('Unauthorized')
+        error.status = 401
+        throw error
+      }
       const accessToken = req.session.accessToken
 
       const events = await this.#service.getEvents(accessToken)

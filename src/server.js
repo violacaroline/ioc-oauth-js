@@ -6,6 +6,7 @@
  */
 
 // import cors from 'cors'
+import { container } from './config/bootstrap.js'
 import express from 'express'
 import expressLayouts from 'express-ejs-layouts'
 import { dirname, join } from 'path'
@@ -19,12 +20,10 @@ try {
   // Create express application.
   const app = express()
 
+  app.set('container', container)
+
   // Get the directory name of this module's path.
   const directoryFullName = dirname(fileURLToPath(import.meta.url))
-
-  // app.use(cors({
-  //   origin: ['https://gitlab.lnu.se']
-  // }))
 
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet({
@@ -95,7 +94,7 @@ try {
   // Error handler.
   app.use(function (err, req, res, next) {
     // 401 Unauthorized.
-    if (err.status === 401 || err.response.status === 401) {
+    if (err.status === 401) {
       return res
         .status(401)
         .sendFile(join(directoryFullName, 'views', 'errors', '401.html'))
