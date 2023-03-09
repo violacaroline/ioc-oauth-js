@@ -16,3 +16,5 @@ router.get('/user/profile', (req, res, next) => controller.getProfile(req, res, 
 router.get('/user/events', (req, res, next) => controller.getEvents(req, res, next))
 
 router.get('/user/groups', (req, res, next) => controller.getGroupsAndProjects(req, res, next))
+
+router.get('/user/logout', (req, res, next) => controller.logOut(req, res, next))

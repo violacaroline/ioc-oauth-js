@@ -94,6 +94,13 @@ try {
 
   // Error handler.
   app.use(function (err, req, res, next) {
+    // 401 Unauthorized.
+    if (err.status === 401 || err.response.status === 401) {
+      return res
+        .status(401)
+        .sendFile(join(directoryFullName, 'views', 'errors', '401.html'))
+    }
+
     // 404 Not Found.
     if (err.status === 404) {
       return res
