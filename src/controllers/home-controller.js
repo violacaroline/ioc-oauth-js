@@ -83,11 +83,6 @@ export class HomeController {
         throw error
       }
       const accessToken = req.session.accessToken
-      // GET REFRESHTOKEN???
-      // const parameters = `client_id=${process.env.APPLICATION_ID}&client_secret=${process.env.APPLICATION_SECRET}&refresh_token=${refreshToken}&grant_type=refresh_token&redirect_uri=${process.env.REDIRECT_URI}`
-      // const response = await axios.post('https://gitlab.lnu.se/oauth/token', parameters)
-
-      // const { data } = await axios.get(`${process.env.GITLAB_REST_API}/user?access_token=${accessToken}`)
 
       const data = await this.#service.getProfile(accessToken)
 

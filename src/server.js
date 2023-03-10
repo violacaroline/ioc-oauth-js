@@ -5,7 +5,6 @@
  * @version 1.0.0
  */
 
-// import cors from 'cors'
 import { container } from './config/bootstrap.js'
 import express from 'express'
 import expressLayouts from 'express-ejs-layouts'
