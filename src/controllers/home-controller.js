@@ -16,7 +16,7 @@ export class HomeController {
   }
 
   /**
-   * Renders a view and sends the rendered HTML string as an HTTP response.
+   * Renders the landing page and sends the rendered HTML string as an HTTP response.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -31,7 +31,7 @@ export class HomeController {
   }
 
   /**
-   * Renders a view and sends the rendered HTML string as an HTTP response.
+   * Redirects user to Gitlab for authentication.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -39,14 +39,16 @@ export class HomeController {
    */
   async redirectToGitlab (req, res, next) {
     try {
-      res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APPLICATION_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&state=${process.env.STATE}&scope=read_api+read_user+read_repository`)
+      const STATE = this.#service.generateRandomString(20)
+
+      res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APPLICATION_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&state=${STATE}&scope=read_api+read_user+read_repository`)
     } catch (error) {
       next(error)
     }
   }
 
   /**
-   * Renders a view and sends the rendered HTML string as an HTTP response.
+   * Fetches the access token and redirects user to profile page.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -67,7 +69,7 @@ export class HomeController {
   }
 
   /**
-   * Renders a view and sends the rendered HTML string as an HTTP response.
+   * Renders the profile and sends the rendered HTML string as an HTTP response.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -96,7 +98,7 @@ export class HomeController {
   }
 
   /**
-   * Renders a view and sends the rendered HTML string as an HTTP response.
+   * Renders the events and sends the rendered HTML string as an HTTP response.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -110,8 +112,9 @@ export class HomeController {
         throw error
       }
       const accessToken = req.session.accessToken
+      const page = req.query.page || 1
 
-      const events = await this.#service.getEvents(accessToken)
+      const events = await this.#service.getEvents(accessToken, page)
 
       res.render('user/events', { events })
     } catch (error) {
@@ -120,7 +123,7 @@ export class HomeController {
   }
 
   /**
-   * Renders a view and sends the rendered HTML string as an HTTP response.
+   * Renders the groups/projects and sends the rendered HTML string as an HTTP response.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
